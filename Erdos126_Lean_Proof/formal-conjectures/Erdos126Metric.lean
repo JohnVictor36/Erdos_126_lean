@@ -5,18 +5,13 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Ring
 
 /-!
-Auxiliary metric inequalities for the proposed proof of Erdős problem 126.
-
-This file is deliberately separate from the official problem statement. The first
-inequality is the abstract heart of the matching-cost estimate. The second is its
-bipartite, three-step analogue.
+The abstract metric inequality underlying the matching-cost estimate for
+Erdős problem 126.
 -/
 
 open scoped BigOperators
 
 namespace Erdos126
-
-section OnePart
 
 variable {ι : Type*} [Fintype ι]
 
@@ -47,50 +42,5 @@ theorem sum_perm_le_total_of_triangle
           intro j _
           exact Function.Bijective.sum_comp σ.bijective (fun i ↦ ρ j i)
     _ = 2 * ∑ i : ι, ∑ j : ι, ρ i j := by ring
-
-end OnePart
-
-section Bipartite
-
-variable {α β γ : Type*} [Fintype α] [Fintype β]
-
-/-- A complete bipartite matching has small total cost in any ambient
-triangle-distance. The right side is the sum of the three legs of the path
-`a i`, `b l`, `a j`, `b (σ i)` over all triples.
--/
-theorem sum_bipartite_equiv_le_total_of_triangle
-    (ρ : γ → γ → ℝ)
-    (hsymm : ∀ x y, ρ x y = ρ y x)
-    (htriangle : ∀ x y z, ρ x z ≤ ρ x y + ρ y z)
-    (a : α → γ) (b : β → γ) (σ : α ≃ β) :
-    (Finset.univ.sum fun i : α ↦
-      Finset.univ.sum fun _j : α ↦
-        Finset.univ.sum fun _l : β ↦ ρ (a i) (b (σ i))) ≤
-    Finset.univ.sum fun i : α ↦
-      Finset.univ.sum fun j : α ↦
-        Finset.univ.sum fun l : β ↦
-          (ρ (a i) (b l) + ρ (a j) (b l)) + ρ (a j) (b (σ i)) := by
-  apply Finset.sum_le_sum
-  intro i _
-  apply Finset.sum_le_sum
-  intro j _
-  apply Finset.sum_le_sum
-  intro l _
-  calc
-    ρ (a i) (b (σ i)) ≤ ρ (a i) (b l) + ρ (b l) (b (σ i)) :=
-      htriangle (a i) (b l) (b (σ i))
-    _ ≤ ρ (a i) (b l) + (ρ (b l) (a j) + ρ (a j) (b (σ i))) := by
-      simpa [add_comm, add_left_comm, add_assoc] using
-        add_le_add_right (htriangle (b l) (a j) (b (σ i))) (ρ (a i) (b l))
-    _ = (ρ (a i) (b l) + ρ (a j) (b l)) + ρ (a j) (b (σ i)) := by
-      rw [hsymm (b l) (a j)]
-      ring
-
-/-- Translation does not change a bipartite sum. -/
-theorem add_translate_sub_translate
-    (a b c : ℤ) : (a + c) + (b - c) = a + b := by
-  ring
-
-end Bipartite
 
 end Erdos126

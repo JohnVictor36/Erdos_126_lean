@@ -3,10 +3,9 @@ import Erdos126Potentials
 /-!
 # The logged matching identity over an ambient prime set
 
-After passing to a random subset, its additive prime support can be smaller
-than the support of the original set.  The heavy prime must nevertheless stay
-in the identity.  This file therefore states the factorization and matching
-identity over any finite prime set containing the selected support.
+The factorization and matching identities are stated over any finite prime set
+containing the additive support.  This lets the deterministic side argument
+use one fixed ambient support throughout.
 -/
 
 namespace Erdos126

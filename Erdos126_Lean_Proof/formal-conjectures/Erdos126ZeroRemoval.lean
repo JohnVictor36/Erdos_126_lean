@@ -114,28 +114,4 @@ theorem card_le_succ_mul_support_sq_of_positive_bound
     _ ≤ (C + 1) * (addPrimeSupport A).card ^ 2 := by
       nlinarith [sq_nonneg ((addPrimeSupport A).card - 1)]
 
-/-- In particular a positive-set coefficient `1600` transfers verbatim up to
-the unavoidable one-unit coefficient adjustment. -/
-theorem card_le_1601_mul_support_sq_of_positive_1600
-    (hpositive : ∀ (T : Finset ℕ),
-      (∀ a ∈ T, 0 < a) → 2 ≤ T.card →
-        T.card ≤ 1600 * (addPrimeSupport T).card ^ 2)
-    (A : Finset ℕ) (hcard : 2 < A.card) :
-    A.card ≤ 1601 * (addPrimeSupport A).card ^ 2 := by
-  simpa using card_le_succ_mul_support_sq_of_positive_bound
-    1600 hpositive A hcard
-
-/-- The coefficient `768` supplied by the positive global argument leaves
-ample room for zero removal while retaining the advertised coefficient
-`1600` in the official natural-number statement. -/
-theorem card_le_1600_mul_support_sq_of_positive_768
-    (hpositive : ∀ (T : Finset ℕ),
-      (∀ a ∈ T, 0 < a) → 2 ≤ T.card →
-        T.card ≤ 768 * (addPrimeSupport T).card ^ 2)
-    (A : Finset ℕ) (hcard : 2 < A.card) :
-    A.card ≤ 1600 * (addPrimeSupport A).card ^ 2 := by
-  have h769 := card_le_succ_mul_support_sq_of_positive_bound
-    768 hpositive A hcard
-  exact h769.trans <| Nat.mul_le_mul_right _ (by norm_num : 769 ≤ 1600)
-
 end Erdos126

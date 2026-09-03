@@ -4,11 +4,8 @@ subtitle: "A gcd-normalized p-adic matching argument"
 date: "Working draft — September 2026"
 ---
 
-**Status.** This is a self-contained working draft accompanied by a complete
-Lean formalization of the stated finite and asymptotic bounds. Independent
-mathematical and computational audits found no error, but no claim of priority
-is made, and the result should be externally refereed before being cited as
-established.
+**Status.** Self-contained working draft with a Lean formalization. No claim
+of priority is made; external refereeing is still needed.
 
 # 1. Statement of the result
 
@@ -204,64 +201,7 @@ $$
   \sum_{\{i,j\}\in M_p(T)}v_p(U_{ij}).
 $$
 
-# 4. A biased selection for one prime
-
-We next show that, for one chosen prime, a random subset produces a fixed positive fraction of the normalized denominator mass as slack.
-
-**Lemma 3 (biased class selection).** Fix $p\in P(A)$. There is a random subset $T\subseteq\{1,\ldots,k\}$ such that every edge is retained with probability at least $3/16$, and
-
-$$
-\mathbb E S_p(T)\ge\frac18\mathcal B_p(\{1,\ldots,k\}).
-$$
-
-Conditional on auxiliary orientations, the vertex indicators are independent and each has inclusion probability either $1/4$ or $3/4$.
-
-**Proof.** In each exact $v_p(a_i)$-stratum, pair the leading unit classes $u,-u\pmod p$ when $p$ is odd. When $p=2$, pair the classes $1,3\pmod4$. Orient each pair independently and uniformly. Vertices on the favored side are retained independently with probability $3/4$, and vertices on the other side with probability $1/4$.
-
-One leading orientation controls every descendant complementary pair. Fix such a pair with original sizes $c,d$, and let $X,Y$ be its selected sizes. Average over the two orientations. Then
-
-$$
-\mathbb E\!\left[\binom X2+\binom Y2\right]
-=\frac5{16}\left(\binom c2+\binom d2\right),
-\qquad
-\mathbb E[XY]=\frac3{16}cd.
-$$
-
-Pair arbitrarily $\min(c,d)$ original vertices across the two classes. The number of these pairs for which both endpoints are retained is at most $\min(X,Y)$ and has expectation $3\min(c,d)/16$. Hence
-
-$$
-\mathbb E\min(X,Y)\ge\frac3{16}\min(c,d).
-$$
-
-Using
-
-$$
-\binom{|X-Y|}{2}
-=\binom X2+\binom Y2-XY+\min(X,Y),
-$$
-
-we obtain, after simplifying,
-
-$$
-\mathbb E\binom{|X-Y|}{2}
-\ge
-\frac18\left(\binom c2+\binom d2\right)
-+\frac3{16}\binom{|c-d|}{2}
-\ge
-\frac18\left(\binom c2+\binom d2\right).
-$$
-
-Summing the preceding estimate over all residue levels and using Lemma 2 proves the claimed slack bound. Two vertices on opposite sides of the same oriented pair are jointly retained with probability $3/16$; vertices on the same side have averaged joint probability $5/16$; and vertices controlled by independent orientations have joint probability $1/4$. Thus every edge is retained with probability at least $3/16$. $\square$
-
-We will also need $T$ to be large. Conditional on all orientations, every inclusion probability is at least $1/4$. Therefore the Chernoff bound gives
-
-$$
-\Pr(|T|<k/8)\le e^{-k/32}.
-$$
-
-Let $G=\{|T|\ge k/8\}$. Since $0\le S_p(T)\le\mathcal B_p(\{1,\ldots,k\})$, restricting the expected slack bound to $G$ loses at most $e^{-k/32}\mathcal B_p(\{1,\ldots,k\})$. Likewise, for any fixed nonnegative edge weights, the expected weight retained on $G$ is at least $3/16-e^{-k/32}$ times the total weight.
-
-# 5. The valuation metric and matching costs
+# 4. The valuation metric and matching costs
 
 The next lemma prevents the matching edges from carrying an excessive fraction of the normalized numerator.
 
@@ -275,185 +215,144 @@ $$
 
 where the sum is over all primes. Thus $\rho$ is the $\ell^1$ distance between the prime-valuation vectors of the $a_i$.
 
-**Lemma 4 (metric matching bound).** If $T$ has $N\ge4$ vertices and $M$ is any matching on $T$, then
+**Lemma 3 (metric matching bound).** If $T$ has $N\ge2$ vertices and $M$ is any matching on $T$, then
 
 $$
 \sum_{\{i,j\}\in M}\log U_{ij}
-\le\frac{10}{N}\mathcal A(T).
+\le\frac{6}{N}\mathcal A(T).
 $$
 
-**Proof.** Put $x=a_i/g_{ij}$ and $y=a_j/g_{ij}$. These are coprime and $\rho_{ij}=\log(xy)$. If $v_2(a_i)\ne v_2(a_j)$, then $U_{ij}=x+y$; if the valuations are equal, then $x,y$ are odd and $U_{ij}=(x+y)/2$. The arithmetic-geometric mean inequality gives
+**Proof.** Put $w_{ij}=\log U_{ij}$ off the diagonal and $w_{ii}=0$. If $g=g_{ij}$, $x=a_i/g$, and $y=a_j/g$, then $\rho_{ij}=\log(xy)$. According as $x,y$ have different parity or are both odd, $U_{ij}=x+y$ or $(x+y)/2$. Hence
 
 $$
-\frac12\rho_{ij}\le\log U_{ij}\le\rho_{ij}+\log2.
+\rho_{ij}\le2w_{ij},
+\qquad
+w_{ij}\le\rho_{ij}+\log2.
 $$
 
-For a matched edge $\{i,j\}$ and every third vertex $\ell$, the triangle inequality gives
+Extend $M$ to an involution $\sigma$ by fixing the unmatched vertices. Summing the triangle inequality through every intermediate vertex gives
 
 $$
-\rho_{ij}\le\rho_{i\ell}+\rho_{j\ell}.
+N\sum_i\rho_{i,\sigma(i)}
+\le2\sum_{i,j}\rho_{ij}
+\le4\sum_{i,j}w_{ij}.
 $$
 
-Sum this over all $\ell\ne i,j$ and then over the matching. Since any unordered pair occurs at most twice on the right,
+Also $U_{ij}\ge2$ for $i\ne j$, so
 
 $$
-(N-2)\sum_{\{i,j\}\in M}\rho_{ij}
-\le2\sum_{\{i,j\}\subset T}\rho_{ij}.
+N^2\log2\le2\sum_{i,j}w_{ij}.
 $$
 
-By the lower metric comparison above,
+Combining the last two estimates with $w_{i,\sigma(i)}\le\rho_{i,\sigma(i)}+\log2$ gives
 
 $$
-\sum_{\{i,j\}\subset T}\rho_{ij}\le2\mathcal A(T).
+N\sum_iw_{i,\sigma(i)}\le6\sum_{i,j}w_{ij}.
 $$
 
-Also $U_{ij}\ge2$, so $\mathcal A(T)\ge\binom N2\log2$. Combining these estimates with the upper metric comparison,
+Both sums count unordered edges twice, proving the lemma. $\square$
+
+# 5. Deterministic separation at one prime
+
+Fix $p\in P(A)$. Write $a_i=p^{v_p(a_i)}u_i$ with $p\nmid u_i$. For odd $p$, partition the vertices according as the least positive residue of $u_i$ lies in
 
 $$
-\sum_{\{i,j\}\in M}\log U_{ij}
-\le\frac{4}{N-2}\mathcal A(T)
-+\frac{1}{N-1}\mathcal A(T)
-\le\frac{10}{N}\mathcal A(T).
+H_0=\{1,\ldots,(p-1)/2\},
+\qquad H_1=-H_0.
 $$
 
-This proves the lemma. $\square$
+For $p=2$, use instead the odd unit classes $1,3\pmod4$. Denote the two vertex sets by $V_0,V_1$.
+
+Unequal exact $p$-adic valuation strata contribute zero to both normalized valuations. Within an equal stratum, positive normalized difference valuation means $u_i\equiv u_j$, while positive normalized sum valuation means $u_i\equiv-u_j$. Consequently,
+
+$$
+\mathcal B_p(V)=\mathcal B_p(V_0)+\mathcal B_p(V_1),
+\tag{5.1}
+$$
+
+and every normalized $p$-adic numerator valuation inside either $V_\nu$ is zero. The statement includes all powers $p^t$ simultaneously; only the leading unit class is needed to choose the side. The extra factor $2$ in $h_{ij}$ is exactly what makes the same assertion true modulo $4$ for $p=2$.
+
+For each $q\in P(A)$ and each $\nu\in\{0,1\}$, apply Lemma 2 on $V_\nu$, obtaining a matching $M_{q,\nu}$. Since
+
+$$
+\mathcal A(V_\nu)-\mathcal B_P(V_\nu)\ge0
+$$
+
+and every matching slack is nonnegative, while the $p$-numerator mass inside $V_\nu$ vanishes, the exact identity implies
+
+$$
+\mathcal B_p(V_\nu)
+\le\sum_{q\in P}\sum_{e\in M_{q,\nu}}\log U_e.
+\tag{5.2}
+$$
+
+For fixed $q$, the union
+
+$$
+M_q=M_{q,0}\cup M_{q,1}
+$$
+
+is a matching on the original $k$ vertices. Add (5.2) for the two sides, use (5.1), and apply Lemma 3 directly to $M_q$ on the original set. This gives
+
+$$
+\boxed{
+\mathcal B_p(V)\le\frac{6r}{k}\mathcal A(V)
+}
+\qquad(p\in P(A)).
+\tag{5.3}
+$$
+
+It is important that $M_q$ need not be the normalized matching supplied by Lemma 2 on all of $V$. We use the matching identities only on the two sides, where their slacks are nonnegative; the union is used solely in the metric upper bound.
 
 # 6. Proof of Theorem 1
 
-Let $P=P(A)$, $r=|P|$, and let $V=\{1,\ldots,k\}$. Choose $p_*\in P$ for which $\mathcal B_p(V)$ is maximal. Then
+Apply Lemma 2 directly on $V$ for every $q\in P$. Its exact identity, nonnegative slacks, and Lemma 3 yield
 
 $$
-\mathcal B_{p_*}(V)\ge\frac1r\mathcal B_P(V).
+\mathcal A(V)-\mathcal B_P(V)
+\le\frac{6r}{k}\mathcal A(V).
+\tag{6.1}
 $$
 
-Generate the random subset $T$ using Lemma 3 for the prime $p_*$, and retain only the event $G=\{|T|\ge k/8\}$.
-
-Define
+Summing (5.3) over $p\in P$ gives
 
 $$
-\mathcal L(T)=
-\mathcal A(T)-\mathcal B_P(T)+\sum_{p\in P}S_p(T).
+\mathcal B_P(V)
+\le\frac{6r^2}{k}\mathcal A(V).
+\tag{6.2}
 $$
 
-For every outcome in $G$, the exact identity following Lemma 2 gives
+Adding (6.1) and (6.2),
 
 $$
-\mathcal L(T)\le
-\sum_{p\in P}\sum_{e\in M_p(T)}\log U_e.
+\mathcal A(V)
+\le\frac{6r(r+1)}{k}\mathcal A(V).
 $$
 
-Lemma 4 and $|T|\ge k/8$ then give
+Since $\mathcal A(V)>0$ for $k\ge2$, cancellation gives
 
 $$
-\mathcal L(T)\le\frac{80r}{k}\mathcal A(T).
+\boxed{k\le6r(r+1)\le12r^2}.
 $$
 
-We now average the left side. Decompose
+In particular,
 
 $$
-\mathcal A(T)-\mathcal B_P(T)
-=\bigl(\mathcal A(T)-\mathcal B(T)\bigr)
-+\bigl(\mathcal B(T)-\mathcal B_P(T)\bigr).
+r(A)\ge\sqrt{k/12}.
 $$
 
-Both terms on the right are sums of nonnegative edge weights, by the ratio
-identity in Section 2. Choose $k$ large enough that $e^{-k/32}\le1/16$.
-Lemma 3, the pointwise upper bound on $S_{p_*}$, and the Chernoff estimate then
-give the explicit inequality
+# 7. What makes the proof work
 
-$$
-\mathbb E\,\mathbf1_G\mathcal L(T)\ge
-\frac18\bigl(\mathcal A(V)-\mathcal B(V)\bigr)
-+\frac18\bigl(\mathcal B(V)-\mathcal B_P(V)\bigr)
-+\frac1{16}\mathcal B_{p_*}(V).
-$$
+The pairwise gcd normalization removes self-paired residue chains.  The two
+$p$-unit sides then place all normalized $p$-difference mass inside the sides
+and all normalized $p$-sum mass across them.  The side matchings are used only
+where their slack is nonnegative; after that they may be joined and charged to
+the metric energy of the full $k$-vertex set.  Thus the proof is deterministic,
+height-free, and loses no factor from a small side.
 
-Set
-
-$$
-X=\mathcal A(V)-\mathcal B(V),
-\qquad
-Y=\mathcal B(V)-\mathcal B_P(V),
-\qquad
-Z=\mathcal B_P(V).
-$$
-
-These quantities are nonnegative and $X+Y+Z=\mathcal A(V)$. By the maximal
-choice of $p_*$, the preceding lower bound is at least
-
-$$
-\frac1{16}\left(X+Y+\frac Zr\right)
-\ge\frac{\mathcal A(V)}{16r}.
-$$
-
-On the other hand, $\mathcal A(T)\le\mathcal A(V)$, so the expected matching upper bound, restricted to $G$, is at most
-
-$$
-\frac{80r}{k}\mathcal A(V).
-$$
-
-Comparing the last two bounds and cancelling the positive quantity $\mathcal A(V)$ yields
-
-$$
-\frac1{16r}\le\frac{80r}{k},
-$$
-
-and therefore
-
-$$
-k\le1280r^2.
-$$
-
-This proves Theorem 1 for all sufficiently large $k$. Reducing the absolute
-constant handles the remaining finite set of values of $k$. $\square$
-
-# 7. Remarks on the mechanism
-
-1. The direct disturbance fails in a self-paired class $0\pmod {p^t}$. Pairwise gcd normalization removes the common valuation $\min(v_p(a_i),v_p(a_j))$ from both sum and difference, leaving equal-valuation unit strata whose complementary classes are non-self.
-
-2. The proof disturbs only one prime, namely a prime carrying at least $1/r$ of the $P$-part of the normalized denominator. The other primes require only their nonnegative matching inequalities.
-
-3. The metric estimate globalizes the normalization: although one $U_{ij}$ may be huge, the total valuation distance of a matching is at most $O(1/k)$ of the total pairwise distance.
-
-4. The argument is height-free; no multiplicatively short-interval reduction is used.
-
-5. The proof is self-contained, but because the conclusion appears stronger than the bound commonly associated with this problem, independent external verification and a literature-priority check are essential before formal circulation.
-
-# 8. Lean formalization status
-
-The formalization is a standalone continuation of the official statement
-`FormalConjectures.ErdosProblems.126`; the official source file itself is not
-modified. Lean 4.33.1 now checks the complete dependency chain, including:
-
-- the pairwise gcd and $2$-adic normalization;
-- the simultaneous nested $p$-adic matching for every prime;
-- the exact finite biased sample and its $1/8$, $3/16$, and good-event
-  estimates;
-- restriction and re-optimization of matchings after sampling;
-- the ambient-prime logarithmic identity and all factorization bookkeeping;
-- the concrete $6/N$ valuation-metric matching bound;
-- the global expectation sandwich and the numerical cancellation
-  $$
-  k\le1536r^2
-  $$
-  for positive sets;
-- removal of a possible zero, yielding
-  $$
-  k\le1600r^2
-  $$
-  for finsets of natural numbers with $k>2$;
-- the transfer to the asymptotic conclusion in the official conjecture.
-
-The imported $A+A$ proof contains no `sorry`, `admit`, `native_decide`, or
-custom axiom.  Lean's `#print axioms` command reports only the standard
-foundational principles `propext`, `Classical.choice`, and `Quot.sound` for
-both the finite bound and the final asymptotic theorem.  A separate exploratory
-$A+B$ file, not imported by this proof, remains unfinished.
-
-Because the conclusion appears stronger than the bound usually associated
-with this problem, the mathematical argument and the formalization should
-still receive independent expert review before a claim of priority or
-publication.
+For finsets of natural numbers, erasing a possible zero and applying the same
+argument gives $k\le13r^2$ when $k>2$.  The accompanying Lean modules formalize
+this version and its transfer to the official asymptotic statement.
 
 # References
 

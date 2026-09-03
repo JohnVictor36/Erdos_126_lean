@@ -267,7 +267,11 @@ theorem Zpotential_nonneg
     (T : Finset ℕ) (P : Finset ℕ) (_hprime : ∀ p ∈ P, p.Prime) :
     0 ≤ Zpotential P T := by
   simp only [Zpotential, BP, Bp]
-  positivity [Real.log_natCast_nonneg]
+  apply Finset.sum_nonneg
+  intro p hp
+  apply Finset.sum_nonneg
+  intro e he
+  exact mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg p)
 
 /- ## Bridge to the valuation-level matching theorem -/
 
